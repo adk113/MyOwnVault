@@ -88,3 +88,12 @@ This repository includes an automated GitHub Actions deployment workflow ([`.git
 
 ### 3. Mobile Deployment (Expo / Capacitor)
 - For native mobile biometrics (FaceID/TouchID), hook into `expo-local-authentication` and `expo-secure-store` via the pluggable biometric adapter interface in [`src/crypto/biometric.js`](./src/crypto/biometric.js).
+
+---
+
+## 📱 Progressive Web App (PWA) Offline Engine (Gate 4)
+
+MyOwnVault is packaged with full **Progressive Web App (PWA)** capabilities powered by `vite-plugin-pwa` and Workbox:
+- **Offline Precaching**: The Service Worker precaches all HTML, scripts, stylesheets, fonts, and icons so the application can be opened and used completely without an internet connection.
+- **Installable Standalone App**: Can be installed to desktop (Chrome/Edge/Brave) or added to home screen on iOS and Android ("Add to Home Screen") for an immersive full-screen native app experience.
+- **Auto-Updating Service Worker**: Safely updates assets in the background while keeping user data strictly encrypted inside local IndexedDB.
