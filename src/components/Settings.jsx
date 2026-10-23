@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  DatabaseBackup, Download, Fingerprint, History, KeyRound, Palette, RotateCcw, ShieldAlert, Siren, Timer, Trash2, Upload, Loader2,
+  DatabaseBackup, Download, Fingerprint, History, KeyRound, Palette, QrCode, RotateCcw, ShieldAlert, Siren, Smartphone, Timer, Trash2, Upload, Loader2,
 } from 'lucide-react';
 import { Modal, ThemeSlider } from './ui.jsx';
 import PasswordInput from './PasswordInput.jsx';
@@ -176,6 +176,34 @@ export default function Settings() {
                 ))}
               </ul>
             )}
+          </Section>
+
+          <Section icon={<Smartphone size={18} />} title="Mobile & Offline App (iOS & Android)" desc="MyOwnVault installs natively as an offline-first Progressive Web App (PWA) with zero third-party dependencies or tracking.">
+            <div className="pwa-install-banner">
+              <div className="pwa-qr-preview">
+                <img src="./qr-pages.svg" alt="Scan to install MyOwnVault" width="130" height="130" className="pwa-qr-img" />
+                <span className="pwa-qr-caption">Scan with phone camera</span>
+              </div>
+              <div className="pwa-steps">
+                <div className="pwa-step-card">
+                  <b>🍏 Apple iOS (iPhone & iPad)</b>
+                  <p>1. Open <a href="https://adk113.github.io/MyOwnVault/" target="_blank" rel="noreferrer">adk113.github.io/MyOwnVault/</a> in <b>Safari</b>.</p>
+                  <p>2. Tap the <b>Share</b> icon (square with arrow) at the bottom.</p>
+                  <p>3. Tap <b>"Add to Home Screen"</b> and confirm.</p>
+                </div>
+                <div className="pwa-step-card">
+                  <b>🤖 Android (Chrome / Brave / Edge)</b>
+                  <p>1. Scan the QR code or open in <b>Chrome</b>.</p>
+                  <p>2. Tap the <b>"Install App"</b> banner or menu (⋮) → <b>"Add to Home screen"</b>.</p>
+                  <p>3. The standalone app installs instantly with native offline storage.</p>
+                </div>
+              </div>
+            </div>
+            <Row title="Direct Web App URL" desc="https://adk113.github.io/MyOwnVault/">
+              <button className="btn btn-soft" onClick={() => { navigator.clipboard?.writeText('https://adk113.github.io/MyOwnVault/'); toast('App link copied to clipboard'); }}>
+                Copy Link
+              </button>
+            </Row>
           </Section>
 
           <Section icon={<DatabaseBackup size={18} />} title="Encrypted Backup & Smart Merge" desc="Backups use their own passphrase (PBKDF2 × 600,000 + AES-GCM-256). Importing shows row-level conflicts instead of overwriting blindly.">
