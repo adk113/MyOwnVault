@@ -482,15 +482,19 @@ nav { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; flex: 1
 .snaps li div { flex: 1; display: flex; flex-direction: column; }
 .snaps small { color: var(--muted); }
 .snaps svg { color: var(--accent); }
-.pwa-install-banner { display: flex; gap: 20px; align-items: stretch; margin-bottom: 16px; padding: 16px; background: var(--surface-2); border-radius: 18px; border: 1px solid var(--border); flex-wrap: wrap; }
-.pwa-qr-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; background: #ffffff; border-radius: 14px; border: 1px solid var(--border); min-width: 140px; }
+.pwa-install-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 6px; }
+.pwa-platform-card { display: flex; flex-direction: column; gap: 14px; padding: 18px; background: var(--surface-2); border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+.pwa-platform-header { display: flex; flex-direction: column; gap: 4px; }
+.platform-tag { align-self: flex-start; font-size: 0.74rem; font-weight: 700; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.04em; }
+.platform-tag.ios { background: color-mix(in srgb, #3b82f6 18%, transparent); color: #60a5fa; }
+.platform-tag.android { background: color-mix(in srgb, #10b981 18%, transparent); color: #34d399; }
+.pwa-platform-header b { font-size: 1rem; color: var(--text); }
+.pwa-qr-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #ffffff; border-radius: 16px; border: 1px solid var(--border); align-self: center; }
 .pwa-qr-img { border-radius: 6px; display: block; }
-.pwa-qr-caption { font-size: 0.72rem; color: #1e293b; font-weight: 600; text-align: center; }
-.pwa-steps { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 10px; justify-content: center; }
-.pwa-step-card { padding: 10px 14px; border-radius: 12px; background: var(--surface-3); border: 1px solid var(--border); font-size: 0.84rem; display: flex; flex-direction: column; gap: 4px; }
-.pwa-step-card b { color: var(--text); font-size: 0.88rem; }
-.pwa-step-card p { margin: 0; color: var(--text-2); font-size: 0.8rem; line-height: 1.4; }
-.pwa-step-card a { color: var(--accent); text-decoration: underline; font-weight: 600; }
+.pwa-qr-caption { font-size: 0.72rem; color: #0f172a; font-weight: 700; text-align: center; }
+.pwa-mini-steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 0.82rem; color: var(--text-2); }
+.pwa-mini-steps li b { color: var(--text); }
+.pwa-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
 
 /* ── Merge dialog ──────────────────────────────────────────── */

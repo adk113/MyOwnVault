@@ -178,32 +178,53 @@ export default function Settings() {
             )}
           </Section>
 
-          <Section icon={<Smartphone size={18} />} title="Mobile & Offline App (iOS & Android)" desc="MyOwnVault installs natively as an offline-first Progressive Web App (PWA) with zero third-party dependencies or tracking.">
-            <div className="pwa-install-banner">
-              <div className="pwa-qr-preview">
-                <img src="./qr-pages.svg" alt="Scan to install MyOwnVault" width="130" height="130" className="pwa-qr-img" />
-                <span className="pwa-qr-caption">Scan with phone camera</span>
-              </div>
-              <div className="pwa-steps">
-                <div className="pwa-step-card">
-                  <b>🍏 Apple iOS (iPhone & iPad)</b>
-                  <p>1. Open <a href="https://adk113.github.io/MyOwnVault/" target="_blank" rel="noreferrer">adk113.github.io/MyOwnVault/</a> in <b>Safari</b>.</p>
-                  <p>2. Tap the <b>Share</b> icon (square with arrow) at the bottom.</p>
-                  <p>3. Tap <b>"Add to Home Screen"</b> and confirm.</p>
+          <Section icon={<Smartphone size={18} />} title="Mobile Apps & QR Codes (iOS & Android)" desc="MyOwnVault provides native offline installation for Apple iOS and a standalone compiled APK or PWA for Android.">
+            <div className="pwa-install-grid">
+              {/* iOS Card */}
+              <div className="pwa-platform-card">
+                <div className="pwa-platform-header">
+                  <span className="platform-tag ios">🍏 Apple iOS</span>
+                  <b>Safari Home Screen App</b>
                 </div>
-                <div className="pwa-step-card">
-                  <b>🤖 Android (Chrome / Brave / Edge)</b>
-                  <p>1. Scan the QR code or open in <b>Chrome</b>.</p>
-                  <p>2. Tap the <b>"Install App"</b> banner or menu (⋮) → <b>"Add to Home screen"</b>.</p>
-                  <p>3. The standalone app installs instantly with native offline storage.</p>
+                <div className="pwa-qr-preview">
+                  <img src="./qr-ios.svg" alt="Scan to install on iOS" width="140" height="140" className="pwa-qr-img" />
+                  <span className="pwa-qr-caption">Scan with iPhone Camera</span>
+                </div>
+                <ol className="pwa-mini-steps">
+                  <li>Scan QR or open in <b>Safari</b></li>
+                  <li>Tap the <b>Share</b> button (square with arrow)</li>
+                  <li>Tap <b>"Add to Home Screen"</b></li>
+                </ol>
+                <button className="btn btn-soft btn-sm" onClick={() => { navigator.clipboard?.writeText('https://adk113.github.io/MyOwnVault/'); toast('iOS link copied'); }}>
+                  Copy iOS Link
+                </button>
+              </div>
+
+              {/* Android Card */}
+              <div className="pwa-platform-card">
+                <div className="pwa-platform-header">
+                  <span className="platform-tag android">🤖 Android</span>
+                  <b>Download Standalone APK</b>
+                </div>
+                <div className="pwa-qr-preview">
+                  <img src="./qr-android-apk.svg" alt="Scan to download Android APK" width="140" height="140" className="pwa-qr-img" />
+                  <span className="pwa-qr-caption">Scan to Download .APK</span>
+                </div>
+                <ol className="pwa-mini-steps">
+                  <li>Scan QR to download <b>MyOwnVault.apk</b></li>
+                  <li>Tap notification to install</li>
+                  <li>100% offline standalone native vault</li>
+                </ol>
+                <div className="pwa-card-actions">
+                  <a href="https://github.com/adk113/MyOwnVault/releases/download/v1.0.0/MyOwnVault.apk" target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">
+                    <Download size={14} /> Download APK
+                  </a>
+                  <button className="btn btn-soft btn-sm" onClick={() => { navigator.clipboard?.writeText('https://github.com/adk113/MyOwnVault/releases/download/v1.0.0/MyOwnVault.apk'); toast('APK link copied'); }}>
+                    Copy Link
+                  </button>
                 </div>
               </div>
             </div>
-            <Row title="Direct Web App URL" desc="https://adk113.github.io/MyOwnVault/">
-              <button className="btn btn-soft" onClick={() => { navigator.clipboard?.writeText('https://adk113.github.io/MyOwnVault/'); toast('App link copied to clipboard'); }}>
-                Copy Link
-              </button>
-            </Row>
           </Section>
 
           <Section icon={<DatabaseBackup size={18} />} title="Encrypted Backup & Smart Merge" desc="Backups use their own passphrase (PBKDF2 × 600,000 + AES-GCM-256). Importing shows row-level conflicts instead of overwriting blindly.">
