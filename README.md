@@ -66,3 +66,25 @@ npm test
 npm run build
 ```
 The static site bundle is created in `dist/`.
+
+---
+
+## 🌐 Zero-Backend Static Site Deployments (Gate 3)
+
+Because MyOwnVault is 100% offline and stores encrypted data purely in the client's IndexedDB, it can be deployed to any zero-backend static site host.
+
+### 1. Render (Static Site Mode)
+This repository includes a pre-configured [`render.yaml`](./render.yaml):
+- **Build Command**: `npm install && npm run build`
+- **Publish Directory**: `./dist`
+- **Zero-Backend Security Headers**: Configured with strict CSP (`connect-src 'none'`), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and `Strict-Transport-Security`.
+- To deploy: In Render, select **New + Blueprint**, connect `https://github.com/adk113/MyOwnVault`, and Render will automatically provision the static site.
+
+### 2. GitHub Pages (Automated CI/CD)
+This repository includes an automated GitHub Actions deployment workflow ([`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml)):
+1. Navigate to your repository **Settings → Pages**.
+2. Under **Build and deployment → Source**, choose **GitHub Actions**.
+3. Every push to `main` will automatically run tests, build the bundle, and deploy to your GitHub Pages URL!
+
+### 3. Mobile Deployment (Expo / Capacitor)
+- For native mobile biometrics (FaceID/TouchID), hook into `expo-local-authentication` and `expo-secure-store` via the pluggable biometric adapter interface in [`src/crypto/biometric.js`](./src/crypto/biometric.js).
