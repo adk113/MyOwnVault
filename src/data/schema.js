@@ -1,0 +1,342 @@
+/**
+ * Declarative schema that drives forms, cards, analytics and guides for all 8 modules.
+ *
+ * Field types
+ *   text | tel | textarea | number | money | select | date | month
+ *   secret (password)  userid  pin  totp  -> rendered as tap-to-copy secure pill badges
+ *   institution (smart auto-fill)  url (smart portal link)  file (encrypted blob)  computed
+ * Flags: required, copy (copy badge for plain text), sensitive (masked by privacy toggle), full (full row)
+ */
+
+const portalGroup = (urlLabel, nickHint = 'e.g. "Salary account login"') => [
+  { key: 'portalNickname', label: 'Portal Nickname', type: 'text', hint: nickHint, group: 'portal' },
+  {
+    key: 'portalUrl',
+    label: urlLabel,
+    type: 'url',
+    hint: 'Auto-filled from the offline institution dictionary – always double-check the address before logging in.',
+    group: 'portal',
+  },
+];
+
+export const MODULES = [
+  {
+    id: 'banking',
+    label: 'Banking Hub',
+    short: 'Banking',
+    singular: 'Bank Account',
+    icon: 'Landmark',
+    hue: 188,
+    titleKey: 'nickname',
+    subtitleKey: 'institution',
+    headline: { key: 'balance', label: 'Balance' },
+    assetClass: 'Cash',
+    valueKey: 'balance',
+    badges: ['userId', 'password', 'txnPassword', 'atmPin'],
+    assist: ['userId', 'password', 'txnPassword', 'atmPin', 'totpSecret'],
+    guide: {
+      intro:
+        'Add every savings, current or salary account. Only the nickname and institution are required – fill in credentials if you want one-tap copy while logging in.',
+      terms: [
+        { t: 'Routing / IFSC / SWIFT', d: 'Identifies your bank branch. IFSC (India, 11 chars e.g. HDFC0001234) is printed on your cheque book; US banks use a 9-digit ABA routing number; SWIFT/BIC (8–11 chars) is for international transfers.' },
+        { t: 'Transaction password', d: 'A second password some banks ask for before moving money (separate from your login password).' },
+        { t: 'ATM PIN', d: 'The 4–6 digit card PIN. Stored encrypted – never shown unless you unmask it.' },
+        { t: 'TOTP secret', d: 'Optional. The base32 key (or otpauth:// link) shown when you set up an authenticator app. The vault then generates live 6-digit codes.' },
+      ],
+    },
+    fields: [
+      { key: 'nickname', label: 'Account Nickname', type: 'text', required: true, hint: 'e.g. "Primary Salary"' },
+      { key: 'institution', label: 'Financial Institution', type: 'institution', kind: 'b', required: true },
+      { key: 'accountNumber', label: 'Account Number', type: 'text', copy: true, sensitive: true },
+      { key: 'routing', label: 'Routing / IFSC / SWIFT Code', type: 'text', copy: true },
+      { key: 'userId', label: 'User Identification', type: 'userid' },
+      { key: 'password', label: 'Login Credential', type: 'secret' },
+      { key: 'txnPassword', label: 'Transaction Password', type: 'secret' },
+      { key: 'atmPin', label: 'ATM PIN Code', type: 'pin' },
+      { key: 'totpSecret', label: 'TOTP 2FA Secret (optional)', type: 'totp' },
+      { key: 'balance', label: 'Localized Balance', type: 'money' },
+      { key: 'support', label: 'Customer Support Line', type: 'tel', copy: true },
+      ...portalGroup('Official Web Portal URL'),
+    ],
+  },
+  {
+    id: 'credit',
+    label: 'Credit Portfolios',
+    short: 'Credit Cards',
+    singular: 'Credit Card',
+    icon: 'CreditCard',
+    hue: 268,
+    titleKey: 'nickname',
+    subtitleKey: 'institution',
+    headline: { key: 'outstanding', label: 'Outstanding', debt: true },
+    isLiability: true,
+    valueKey: 'outstanding',
+    badges: ['cardNumber', 'cvv', 'netUserId', 'netPassword', 'txnPin'],
+    assist: ['netUserId', 'netPassword', 'txnPin', 'cardNumber', 'cvv'],
+    guide: {
+      intro:
+        'Track each card with its limit, current dues and payment date. Cards with a due date inside 7 days are flagged on the dashboard.',
+      terms: [
+        { t: 'CVV', d: 'The 3-digit (4 for Amex) code on the back of the card. Card networks forbid storing it in plain text – it stays encrypted here.' },
+        { t: 'Payment Maturity Date', d: 'The date your bill must be paid by. If the date is in the past it is treated as recurring monthly.' },
+        { t: 'Net Banking credentials', d: 'The login you use on the issuer’s website/app, not the card PIN.' },
+        { t: 'Transaction PIN', d: 'The PIN used for ATM withdrawals or chip-and-PIN payments.' },
+        { t: 'Expiry', d: 'Type MM/YY exactly as printed on the card, or pick from the calendar.' },
+      ],
+    },
+    fields: [
+      { key: 'nickname', label: 'Card Name', type: 'text', required: true, hint: 'e.g. "Amazon Pay ICICI"' },
+      { key: 'institution', label: 'Issuing Entity', type: 'institution', kind: 'c', required: true },
+      { key: 'cardNumber', label: 'Complete Card Number', type: 'cardnumber' },
+      { key: 'expiry', label: 'Expiry Horizon', type: 'month', hint: 'MM/YY or pick from calendar' },
+      { key: 'cvv', label: 'Card Verification Value (CVV)', type: 'pin' },
+      { key: 'netUserId', label: 'Net Banking User ID', type: 'userid' },
+      { key: 'netPassword', label: 'Net Banking Password', type: 'secret' },
+      { key: 'txnPin', label: 'Transaction PIN', type: 'pin' },
+      { key: 'creditLimit', label: 'Maximum Credit Limit', type: 'money' },
+      { key: 'outstanding', label: 'Real-time Outstanding Balance', type: 'money' },
+      { key: 'dueDate', label: 'Payment Maturity Date', type: 'date' },
+      ...portalGroup('Official Card Portal URL'),
+    ],
+  },
+  {
+    id: 'mutual',
+    label: 'Mutual Funds',
+    short: 'Mutual Funds',
+    singular: 'Mutual Fund',
+    icon: 'PieChart',
+    hue: 152,
+    titleKey: 'title',
+    subtitleKey: 'institution',
+    headline: { key: 'valuation', label: 'Net Asset Valuation' },
+    assetClass: 'Mutual Funds',
+    valueKey: 'valuation',
+    badges: ['folio'],
+    assist: ['folio'],
+    guide: {
+      intro:
+        'One entry per scheme/folio. Net Asset Valuation is calculated for you from Units × NAV – just refresh the NAV whenever you review.',
+      terms: [
+        { t: 'Folio number', d: 'Your account number with the fund house (AMC). Find it on the CAS statement, SMS/e-mail confirmation or the AMC portal under “Portfolio”.' },
+        { t: 'Units held', d: 'Fractional units you own – usually 3 decimals (e.g. 128.456).' },
+        { t: 'Average cost of entry', d: 'Average price you paid per unit (total invested ÷ units).' },
+        { t: 'NAV', d: 'Net Asset Value – the per-unit price published by the AMC at the end of each business day.' },
+        { t: 'Statement attachment', d: 'Attach a PDF/image (max 3 MB). It is encrypted inside the vault together with everything else.' },
+      ],
+    },
+    compute: (d) => ({ ...d, valuation: Math.round((Number(d.units) || 0) * (Number(d.nav) || 0) * 100) / 100 }),
+    fields: [
+      { key: 'title', label: 'Instrument Title', type: 'text', required: true, hint: 'e.g. "Parag Parikh Flexi Cap – Direct Growth"' },
+      { key: 'institution', label: 'AMC / Fund House', type: 'institution', kind: 'm' },
+      { key: 'folio', label: 'Folio Reference', type: 'text', copy: true, sensitive: true },
+      { key: 'category', label: 'Asset Categorization', type: 'select', options: ['Equity', 'Debt', 'Hybrid'] },
+      { key: 'units', label: 'Fractional Units Held', type: 'number', step: '0.001' },
+      { key: 'avgCost', label: 'Average Cost of Entry (per unit)', type: 'money' },
+      { key: 'nav', label: 'Live Net Asset Value (NAV)', type: 'money' },
+      { key: 'valuation', label: 'Net Asset Valuation', type: 'computed', hint: 'Auto = Units × NAV' },
+      { key: 'nominee', label: 'Registered Beneficiary / Nominee', type: 'text', sensitive: true },
+      { key: 'statement', label: 'Statement Attachment (Encrypted Blob)', type: 'file', full: true },
+      { key: 'portalNickname', label: 'Portal Nickname', type: 'text', group: 'portal' },
+      { key: 'portalUrl', label: 'AMC Portal Link', type: 'url', group: 'portal', hint: 'Auto-filled from the offline institution dictionary.' },
+    ],
+  },
+  {
+    id: 'equities',
+    label: 'Direct Equities',
+    short: 'Equities',
+    singular: 'Equity Holding',
+    icon: 'TrendingUp',
+    hue: 32,
+    titleKey: 'ticker',
+    subtitleKey: 'institution',
+    headline: { key: 'valuation', label: 'Valuation' },
+    assetClass: 'Stocks',
+    valueKey: 'valuation',
+    badges: ['userId', 'password', 'totpSecret'],
+    assist: ['userId', 'password', 'totpSecret'],
+    guide: {
+      intro:
+        'Log each holding (or one entry per broker account). Paste your authenticator secret and the vault becomes your offline 2FA code generator.',
+      terms: [
+        { t: 'Depository Participant', d: 'The depository holding your shares in electronic form: NSDL or CDSL (India), DTCC (US). It appears on your demat statement.' },
+        { t: 'Trading account identity', d: 'Your client ID / UCC / account number with the broker.' },
+        { t: 'TOTP secret', d: 'The base32 text (or otpauth:// link) displayed under the QR code when enabling 2FA at your broker. Never share it.' },
+        { t: 'Average capital cost', d: 'Average buy price per share. Cost basis = Volume × Average cost.' },
+        { t: 'Asset valuation', d: 'Current total market value of this holding.' },
+      ],
+    },
+    fields: [
+      { key: 'ticker', label: 'Equity Ticker / Asset Name', type: 'text', required: true, hint: 'e.g. RELIANCE, AAPL' },
+      { key: 'depository', label: 'Depository Participant', type: 'select', options: ['NSDL', 'CDSL', 'DTCC', 'Other'] },
+      { key: 'institution', label: 'Broker Profile', type: 'institution', kind: 'k', required: true },
+      { key: 'userId', label: 'Trading Account Identity', type: 'userid' },
+      { key: 'password', label: 'Authentication Password', type: 'secret' },
+      { key: 'totpSecret', label: 'Integrated TOTP Secret', type: 'totp' },
+      { key: 'quantity', label: 'Asset Volume', type: 'number', step: 'any' },
+      { key: 'avgCost', label: 'Average Capital Cost (per unit)', type: 'money' },
+      { key: 'valuation', label: 'Asset Valuation (total)', type: 'money' },
+      ...portalGroup('Broker Smart Link').map((f) => (f.key === 'portalUrl' ? { ...f, label: 'Broker Smart Link' } : f)),
+    ],
+  },
+  {
+    id: 'retirement',
+    label: 'Retirement, Pension & PF',
+    short: 'Retirement',
+    singular: 'Retirement Portfolio',
+    icon: 'Hourglass',
+    hue: 222,
+    titleKey: 'name',
+    subtitleKey: 'institution',
+    headline: { key: 'balance', label: 'Contributed Balance' },
+    assetClass: 'Retirement',
+    valueKey: 'balance',
+    badges: ['accountRef', 'userId', 'password'],
+    assist: ['userId', 'password', 'accountRef', 'totpSecret'],
+    guide: {
+      intro:
+        'Cover EPF, PPF, NPS, 401(k), IRA, superannuation and similar. Maturity/lock-in dates inside 7 days are surfaced on the dashboard.',
+      terms: [
+        { t: 'UAN', d: 'Universal Account Number – the 12-digit EPFO ID that stays with you across employers (on your payslip).' },
+        { t: 'PRAN', d: 'Permanent Retirement Account Number for NPS (12 digits).' },
+        { t: 'SSN / reference', d: 'For US plans, store only a reference you recognise (e.g. last 4 digits) if you prefer not to keep the full number.' },
+        { t: 'Employer contribution', d: 'Describe the match, e.g. “12% of basic” or “50% up to 6%”.' },
+        { t: 'Lock-in / maturity date', d: 'The date funds become fully withdrawable (e.g. PPF 15-year maturity).' },
+      ],
+    },
+    fields: [
+      { key: 'name', label: 'Portfolio Name', type: 'text', required: true, hint: 'EPF, PPF, NPS, 401k, IRA, Superannuation…', suggestions: ['EPF', 'PPF', 'NPS', '401(k)', 'IRA', 'Superannuation'] },
+      { key: 'institution', label: 'Issuing Government Body / Employer', type: 'institution', kind: 'r', required: true },
+      { key: 'accountRef', label: 'PAN / UAN / SSN Reference', type: 'idnum' },
+      { key: 'userId', label: 'Member / Login User ID', type: 'userid' },
+      { key: 'password', label: 'Account Password', type: 'secret' },
+      { key: 'totpSecret', label: 'TOTP 2FA Secret (optional)', type: 'totp' },
+      { key: 'nominee', label: 'Registered Nominee', type: 'text', sensitive: true },
+      { key: 'balance', label: 'Current Contributed Balance', type: 'money' },
+      { key: 'employerContribution', label: 'Employer Contribution Details', type: 'text', hint: 'if applicable' },
+      { key: 'lockIn', label: 'Lock-in Period / Maturity Date', type: 'date' },
+      ...portalGroup('Government / Corporate Portal Link'),
+    ],
+  },
+  {
+    id: 'assets',
+    label: 'Tangible & Fixed Assets',
+    short: 'Fixed Assets',
+    singular: 'Fixed Asset',
+    icon: 'Building2',
+    hue: 12,
+    titleKey: 'name',
+    subtitleKey: 'category',
+    headline: { key: 'currentValue', label: 'Appraised Value' },
+    assetClass: 'Fixed & Real Assets',
+    valueKey: 'currentValue',
+    badges: ['registrationId'],
+    assist: ['registrationId'],
+    guide: {
+      intro:
+        'Property, vehicles, fixed deposits and bonds. Maturity dates within 7 days appear in Insights & Alerts.',
+      terms: [
+        { t: 'Legal registration / policy ID', d: 'Property registration or survey number, vehicle RC number, FD receipt number, bond certificate / ISIN.' },
+        { t: 'Acquisition timeline', d: 'Date you bought or opened the asset.' },
+        { t: 'Yield value at maturity', d: 'Total amount you will receive when a deposit/bond matures.' },
+        { t: 'Physical repository', d: 'Where the original documents/asset are kept – locker number, bank branch, folder, etc.' },
+      ],
+    },
+    fields: [
+      { key: 'name', label: 'Nomenclature', type: 'text', required: true, hint: 'e.g. "2BHK – Pune" or "HDFC FD #2"' },
+      { key: 'category', label: 'Categorization', type: 'select', options: ['Real Estate', 'Motor Vehicles', 'Fixed Deposits', 'Government Bonds'] },
+      { key: 'registrationId', label: 'Legal Registration / Policy Identification', type: 'text', copy: true, sensitive: true },
+      { key: 'acquisitionDate', label: 'Acquisition Timeline', type: 'date' },
+      { key: 'maturityDate', label: 'Maturity Timestamp', type: 'date' },
+      { key: 'maturityValue', label: 'Yield Value at Maturity', type: 'money' },
+      { key: 'currentValue', label: 'Current Appraised Valuation', type: 'money' },
+      { key: 'location', label: 'Physical Repository Coordinates', type: 'text', sensitive: true, full: true },
+    ],
+  },
+  {
+    id: 'liabilities',
+    label: 'Liabilities & Debt',
+    short: 'Liabilities',
+    singular: 'Debt Account',
+    icon: 'Receipt',
+    hue: 350,
+    titleKey: 'title',
+    subtitleKey: 'institution',
+    headline: { key: 'balance', label: 'Unpaid Principal', debt: true },
+    isLiability: true,
+    valueKey: 'balance',
+    badges: ['reference'],
+    assist: ['reference'],
+    guide: {
+      intro:
+        'Home, auto, education and personal loans. Liabilities above your APR threshold (Settings) are highlighted so you know what to repay first.',
+      terms: [
+        { t: 'APR', d: 'Annualized Percentage Rate – the yearly interest cost of the loan, including fees. Enter as a number, e.g. 11.5.' },
+        { t: 'EMI', d: 'Equated Monthly Installment – the fixed amount debited every month.' },
+        { t: 'Unpaid principal', d: 'What you still owe, excluding future interest.' },
+        { t: 'Payment deadline', d: 'Monthly due date. Past dates roll forward monthly for alerts.' },
+      ],
+    },
+    fields: [
+      { key: 'title', label: 'Debt Account Title', type: 'text', required: true, hint: 'e.g. "Home Loan – SBI"' },
+      { key: 'institution', label: 'Financing Institution', type: 'institution', kind: 'l', required: true },
+      { key: 'reference', label: 'Reference Identification', type: 'text', copy: true, sensitive: true },
+      { key: 'principal', label: 'Aggregate Principal Borrowed', type: 'money' },
+      { key: 'balance', label: 'Unpaid Principal Balance', type: 'money' },
+      { key: 'apr', label: 'Annualized Percentage Rate (APR %)', type: 'number', step: '0.01', suffix: '%' },
+      { key: 'emi', label: 'Fixed Monthly Installment (EMI)', type: 'money' },
+      { key: 'paymentDeadline', label: 'Monthly Payment Deadline', type: 'date' },
+      ...portalGroup('Lender Payment Portal Link'),
+    ],
+  },
+  {
+    id: 'commodities',
+    label: 'Precious Commodities',
+    short: 'Commodities',
+    singular: 'Commodity',
+    icon: 'Gem',
+    hue: 48,
+    titleKey: 'description',
+    subtitleKey: 'metal',
+    headline: { key: 'estValue', label: 'Realizable Value' },
+    assetClass: 'Precious Metals',
+    valueKey: 'estValue',
+    badges: [],
+    assist: [],
+    guide: {
+      intro: 'Gold, silver and platinum – coins, bars, jewellery or sovereign gold bonds held physically.',
+      terms: [
+        { t: 'Purity', d: 'Gold: 24K = 99.9% (“999”), 22K = 91.6% (“916”). Silver is often 925 (sterling) or 999 (fine).' },
+        { t: 'Mass weight', d: 'Net weight of the metal. 1 troy ounce ≈ 31.1035 grams.' },
+        { t: 'Capital investment basis', d: 'Total amount you paid including making charges and taxes.' },
+        { t: 'Estimated realizable value', d: 'What you could sell it for today (spot price × weight × purity, less dealer margin).' },
+      ],
+    },
+    fields: [
+      { key: 'description', label: 'Resource Description', type: 'text', required: true, hint: 'e.g. "10 g gold coin"' },
+      { key: 'metal', label: 'Metal Specification', type: 'select', options: ['Gold', 'Silver', 'Platinum'] },
+      { key: 'purity', label: 'Material Purity Designation', type: 'text', hint: 'e.g. 24K / 999' },
+      { key: 'weight', label: 'Mass Weight', type: 'number', step: 'any' },
+      { key: 'weightUnit', label: 'Weight Unit', type: 'select', options: ['Grams', 'Ounces'] },
+      { key: 'costBasis', label: 'Capital Investment Basis', type: 'money' },
+      { key: 'estValue', label: 'Estimated Realizable Value', type: 'money' },
+      { key: 'location', label: 'Vault / Physical Coordinates', type: 'text', sensitive: true, full: true },
+    ],
+  },
+];
+
+export const MODULE_MAP = Object.fromEntries(MODULES.map((m) => [m.id, m]));
+
+export const SECRET_TYPES = new Set(['secret', 'userid', 'pin', 'totp', 'cardnumber', 'idnum']);
+export const isBadgeType = (f) => SECRET_TYPES.has(f.type);
+
+export const ASSET_CLASSES = ['Cash', 'Stocks', 'Mutual Funds', 'Retirement', 'Precious Metals', 'Fixed & Real Assets'];
+
+export const emptyVault = () => ({
+  v: 1,
+  items: Object.fromEntries(MODULES.map((m) => [m.id, []])),
+  settings: { currency: 'INR', aprThreshold: 12 },
+  updatedAt: Date.now(),
+});
+
+export const newId = () =>
+  Array.from(crypto.getRandomValues(new Uint8Array(9)), (b) => b.toString(16).padStart(2, '0')).join('');
