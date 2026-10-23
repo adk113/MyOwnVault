@@ -61,6 +61,7 @@ export function generateInsights(vault, now = new Date()) {
   due('liabilities', 'paymentDeadline', 'EMI due', true);
   due('assets', 'maturityDate', 'Matures', false);
   due('retirement', 'lockIn', 'Lock-in ends', false);
+  due('insurance', 'premiumDue', 'Insurance premium due', true);
 
   for (const it of vault.items.liabilities || []) {
     const apr = toNum(it.apr);

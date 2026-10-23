@@ -12,7 +12,7 @@ import { useVault } from '../state/VaultContext.jsx';
 const kindOf = (f) => (isBadgeType(f) ? f.type : 'text');
 
 export function dueChip(module, item) {
-  const keyMap = { credit: ['dueDate', true], liabilities: ['paymentDeadline', true], assets: ['maturityDate', false], retirement: ['lockIn', false] };
+  const keyMap = { credit: ['dueDate', true], liabilities: ['paymentDeadline', true], assets: ['maturityDate', false], retirement: ['lockIn', false], insurance: ['premiumDue', true] };
   const spec = keyMap[module.id];
   if (!spec) return null;
   const d = daysUntil(item[spec[0]], new Date(), spec[1]);

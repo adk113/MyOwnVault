@@ -31,6 +31,9 @@ export function buildDecoyVault() {
   v.items.liabilities = [
     mk({ title: 'Car Loan', institution: 'HDFC Bank', reference: 'CL-77821', principal: 600000, balance: 310000, apr: 9.2, emi: 11200, paymentDeadline: in2 }),
   ];
+  v.items.insurance = [
+    mk({ policyName: 'Term Life Shield 1Cr', provider: 'HDFC Life', policyNumber: '8877665544', policyType: 'Term Life', sumAssured: 10000000, premium: 14500, premiumDue: in2, cashSurrenderValue: 0, nominee: 'Spouse', support: '1800-266-9777', portalNickname: 'HDFC Life Portal', portalUrl: 'https://www.hdfclife.com/' }),
+  ];
   v.items.commodities = [
     mk({ description: '10 g gold coin', metal: 'Gold', purity: '24K', weight: 10, weightUnit: 'Grams', costBasis: 61000, estValue: 72000, location: 'Bank locker' }),
   ];

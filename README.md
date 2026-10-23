@@ -30,8 +30,9 @@ A secure, zero-knowledge, 100% offline Personal Wealth Ledger and Credential Vau
 4. **Direct Equities**: Tickers, depository participant (NSDL/CDSL/DTCC), brokers, trading IDs, passwords, integrated TOTP secrets, volume, cost basis, and total valuations.
 5. **Retirement, Pension & PF**: Portfolios (EPF, PPF, NPS, 401(k), IRA, Superannuation), UAN/PAN/SSN references, credentials, employer contributions, balances, and lock-in dates.
 6. **Tangible & Fixed Assets**: Real estate, motor vehicles, fixed deposits, government bonds, registration IDs, yield at maturity, appraised valuations, and physical coordinates.
-7. **Liabilities & Debt Schedules**: Aggregate borrowed principal, unpaid balances, APRs, fixed monthly installments (EMI), payment deadlines, and high-interest repayment flags.
-8. **Precious Commodities**: Physical gold, silver, platinum purity designations, weight, cost basis, estimated realizable values, and vault coordinates.
+7. **Insurance & Risk Portfolios**: Policy Name, Provider (LIC, Max Life, Geico, Allianz, Star Health, etc.), Policy Number, Policy Type (Term Life, Health, Motor, Endowment/ULIP), Total Sum Assured / Coverage Amount, Premium Installment Value, Premium Due Date (Calendar + Manual), Current Cash Surrender Value (defaults to 0 for Term/Health), Primary Nominee, Support/Claims Line, Encrypted Digital Policy Attachment, Claims Portal Smart Link.
+8. **Liabilities & Debt Schedules**: Aggregate borrowed principal, unpaid balances, APRs, fixed monthly installments (EMI), payment deadlines, and high-interest repayment flags.
+9. **Precious Commodities**: Physical gold, silver, platinum purity designations, weight, cost basis, estimated realizable values, and vault coordinates.
 
 ---
 

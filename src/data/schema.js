@@ -289,6 +289,45 @@ export const MODULES = [
     ],
   },
   {
+    id: 'insurance',
+    label: 'Insurance & Risk Portfolios',
+    short: 'Insurance',
+    singular: 'Insurance Policy',
+    icon: 'Shield',
+    hue: 165,
+    titleKey: 'policyName',
+    subtitleKey: 'provider',
+    headline: { key: 'sumAssured', label: 'Sum Assured' },
+    assetClass: 'Insurance & Protection',
+    valueKey: 'cashSurrenderValue',
+    badges: ['policyNumber', 'support'],
+    assist: ['policyNumber', 'support'],
+    guide: {
+      intro:
+        'Track all term, health, motor, and investment policies. Premium due dates within 7 days are flagged in Insights & Alerts.',
+      terms: [
+        { t: 'Sum Assured / Coverage', d: 'The maximum coverage benefit payable upon a claim or insured event.' },
+        { t: 'Cash Surrender Value', d: 'Current payout value if surrendering a ULIP or Endowment plan. Defaults to 0 for pure protection plans (Term / Health / Motor).' },
+        { t: 'Policy Number', d: 'Unique identifier issued by your insurer; needed for claims and premium payments.' },
+        { t: 'Claims Contact Line', d: 'Dedicated 24/7 cashless or claim assistance contact number.' },
+      ],
+    },
+    fields: [
+      { key: 'policyName', label: 'Policy Name', type: 'text', required: true, hint: 'e.g. "Term Cover 1Cr" or "Family Floater Health"' },
+      { key: 'provider', label: 'Insurance Provider', type: 'institution', kind: 'i', required: true, hint: 'e.g. LIC, Max Life, Geico, Allianz' },
+      { key: 'policyNumber', label: 'Policy Number', type: 'cardnumber', copy: true, sensitive: true },
+      { key: 'policyType', label: 'Policy Type', type: 'select', options: ['Term Life', 'Health', 'Motor', 'Endowment / ULIP', 'Home / Property', 'Travel'] },
+      { key: 'sumAssured', label: 'Total Sum Assured / Coverage Amount', type: 'money', required: true },
+      { key: 'premium', label: 'Premium Installment Value', type: 'money' },
+      { key: 'premiumDue', label: 'Premium Due Date', type: 'date' },
+      { key: 'cashSurrenderValue', label: 'Current Cash Surrender Value', type: 'money', hint: 'ULIPs/Endowments only; 0 for Term/Health' },
+      { key: 'nominee', label: 'Primary Registered Beneficiary / Nominee', type: 'text', sensitive: true },
+      { key: 'support', label: 'Secure Support / Claims Contact Line', type: 'tel', copy: true },
+      { key: 'statement', label: 'Digital Policy Attachment (Encrypted Blob)', type: 'file', full: true },
+      ...portalGroup('Claims Portal Smart Link'),
+    ],
+  },
+  {
     id: 'commodities',
     label: 'Precious Commodities',
     short: 'Commodities',
@@ -329,7 +368,7 @@ export const MODULE_MAP = Object.fromEntries(MODULES.map((m) => [m.id, m]));
 export const SECRET_TYPES = new Set(['secret', 'userid', 'pin', 'totp', 'cardnumber', 'idnum']);
 export const isBadgeType = (f) => SECRET_TYPES.has(f.type);
 
-export const ASSET_CLASSES = ['Cash', 'Stocks', 'Mutual Funds', 'Retirement', 'Precious Metals', 'Fixed & Real Assets'];
+export const ASSET_CLASSES = ['Cash', 'Stocks', 'Mutual Funds', 'Retirement', 'Precious Metals', 'Fixed & Real Assets', 'Insurance & Protection'];
 
 export const emptyVault = () => ({
   v: 1,

@@ -67,15 +67,17 @@ test('net worth, diversification and insights', () => {
   v.items.banking = [{ id: 'a', balance: 1000 }];
   v.items.equities = [{ id: 'b', valuation: 3000 }];
   v.items.retirement = [{ id: 'c', balance: 6000 }];
+  v.items.insurance = [{ id: 'ins1', policyName: 'Term Plan', cashSurrenderValue: 500, sumAssured: 1000000, premium: 1000, premiumDue: '2026-10-26' }];
   v.items.credit = [{ id: 'd', nickname: 'Card', outstanding: 500, dueDate: '2026-10-25' }];
   v.items.liabilities = [{ id: 'e', title: 'Loan', balance: 2500, apr: 18, emi: 100, paymentDeadline: '2026-01-01' }];
   const nw = computeNetWorth(v);
-  assert.equal(nw.assets, 10000);
+  assert.equal(nw.assets, 10500);
   assert.equal(nw.debt, 3000);
-  assert.equal(nw.net, 7000);
-  assert.equal(Math.round(diversification(v).find((d) => d.name === 'Retirement').pct), 60);
+  assert.equal(nw.net, 7500);
+  assert.equal(Math.round(diversification(v).find((d) => d.name === 'Retirement').pct), 57);
   const ins = generateInsights(v, new Date(2026, 9, 23));
   assert.ok(ins.some((i) => i.kind === 'due' && i.id === 'd' && i.days === 2));
+  assert.ok(ins.some((i) => i.kind === 'due' && i.id === 'ins1' && i.days === 3));
   assert.ok(ins.some((i) => i.kind === 'apr' && i.id === 'e'));
 });
 

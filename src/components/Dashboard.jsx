@@ -8,7 +8,15 @@ import { computeNetWorth, diversification, generateInsights } from '../lib/analy
 import { formatMoney, formatPct } from '../lib/format.js';
 import { useVault } from '../state/VaultContext.jsx';
 
-export const CLASS_COLORS = ['hsl(188 90% 52%)', 'hsl(32 95% 58%)', 'hsl(152 70% 48%)', 'hsl(222 90% 66%)', 'hsl(48 95% 56%)', 'hsl(12 85% 62%)'];
+export const CLASS_COLORS = [
+  'hsl(188 90% 52%)',
+  'hsl(32 95% 58%)',
+  'hsl(152 70% 48%)',
+  'hsl(222 90% 66%)',
+  'hsl(48 95% 56%)',
+  'hsl(12 85% 62%)',
+  'hsl(165 85% 50%)',
+];
 
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.07 } } };
 const rise = { hidden: { opacity: 0, y: 22 }, show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 220, damping: 24 } } };
