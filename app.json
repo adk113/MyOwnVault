@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "MyOwnVault",
+    "slug": "myownvault",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./public/favicon.svg",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#030712",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adk113.myownvault"
+    },
+    "android": {
+      "package": "com.adk113.myownvault",
+      "adaptiveIcon": {
+        "backgroundColor": "#030712"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}
