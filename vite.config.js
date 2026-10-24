@@ -33,7 +33,7 @@ export default defineConfig({
     injectCsp(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'pwa-512x512.svg'],
+      includeAssets: ['favicon.svg', 'favicon.png', 'pwa-512x512.svg', 'pwa-512x512.png', 'app-icon.png'],
       manifest: {
         name: 'MyOwnVault · Personal Wealth Ledger',
         short_name: 'MyOwnVault',
@@ -50,9 +50,20 @@ export default defineConfig({
             purpose: 'any maskable',
           },
           {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable',
+          },
+          {
             src: 'favicon.svg',
             sizes: '64x64',
             type: 'image/svg+xml',
+          },
+          {
+            src: 'favicon.png',
+            sizes: '64x64',
+            type: 'image/png',
           },
         ],
       },

@@ -5,7 +5,7 @@ import AuthScreen from './components/AuthScreen.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import ModuleView from './components/ModuleView.jsx';
 import Settings from './components/Settings.jsx';
-import { ModuleIcon } from './components/Icons.jsx';
+import { ModuleIcon, VaultLogo } from './components/Icons.jsx';
 import { ClipboardPill, ThemeSlider, Toasts } from './components/ui.jsx';
 import { MODULES, MODULE_MAP } from './data/schema.js';
 import { useVault } from './state/VaultContext.jsx';
@@ -68,7 +68,7 @@ function Shell() {
       <div className="aurora aurora-soft" aria-hidden="true"><span /><span /><span /></div>
       <aside className="sidebar" aria-label="Primary">
         <div className="side-brand">
-          <span className="logo logo-sm"><ShieldCheck size={20} /></span>
+          <VaultLogo size={32} />
           <b>MyOwnVault</b>
         </div>
         <nav>

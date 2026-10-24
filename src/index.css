@@ -370,6 +370,7 @@ textarea.input { resize: vertical; min-height: 70px; }
 .shell { position: relative; display: flex; height: 100%; z-index: 1; }
 .sidebar { position: relative; z-index: 2; width: 248px; flex: none; display: flex; flex-direction: column; padding: 20px 14px; background: var(--surface); border-right: 1px solid var(--border); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
 .side-brand { display: flex; align-items: center; gap: 11px; padding: 4px 8px 20px; font-family: 'Outfit Variable', sans-serif; font-size: 1.2rem; }
+.brand-logo-wrap { display: inline-flex; filter: drop-shadow(0 12px 28px rgba(0, 242, 254, 0.35)); }
 .logo { width: 72px; height: 72px; border-radius: 22px; display: grid; place-items: center; background: linear-gradient(135deg, var(--accent), var(--accent-3)); color: var(--accent-ink); box-shadow: 0 10px 40px color-mix(in srgb, var(--accent) 40%, transparent); }
 .logo-sm { width: 36px; height: 36px; border-radius: 11px; }
 nav { display: flex; flex-direction: column; gap: 3px; overflow-y: auto; flex: 1; }

@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, CheckCircle2, Fingerprint, HelpCircle, KeyRound, Loader2, LockKeyhole, ShieldCheck, WifiOff } from 'lucide-react';
 import PasswordInput from './PasswordInput.jsx';
 import { Modal, ThemeSlider } from './ui.jsx';
+import { VaultLogo } from './Icons.jsx';
 import { MAX_PASSWORD } from '../lib/password.js';
 import { useVault } from '../state/VaultContext.jsx';
 
@@ -25,8 +26,13 @@ const DEFAULT_QUESTIONS = [
 function Brand({ sub }) {
   return (
     <div className="brand">
-      <motion.div className="logo" initial={{ scale: 0.6, rotate: -20, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 14 }}>
-        <ShieldCheck size={34} />
+      <motion.div
+        className="brand-logo-wrap"
+        initial={{ scale: 0.6, rotate: -15, opacity: 0 }}
+        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 16 }}
+      >
+        <VaultLogo size={68} />
       </motion.div>
       <h1>MyOwnVault</h1>
       <p>{sub}</p>

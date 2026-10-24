@@ -4,7 +4,7 @@
     "slug": "myownvault",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./public/favicon.svg",
+    "icon": "./public/app-icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "backgroundColor": "#030712",
@@ -17,6 +17,7 @@
     "android": {
       "package": "com.adk113.myownvault",
       "adaptiveIcon": {
+        "foregroundImage": "./public/app-icon.png",
         "backgroundColor": "#030712"
       }
     },
