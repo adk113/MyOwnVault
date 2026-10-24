@@ -52,6 +52,15 @@ const bgXmlContent = `<?xml version="1.0" encoding="utf-8"?>
 </resources>
 `;
 fs.writeFileSync(bgXmlPath, bgXmlContent, 'utf-8');
-console.log('✓ Updated ic_launcher_background.xml color to #030712');
+// Also ensure Expo assets directory is kept in sync
+const ASSETS_DIR = path.join(ROOT, 'assets');
+if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
+fs.copyFileSync(SOURCE_ICON, path.join(ASSETS_DIR, 'icon.png'));
+fs.copyFileSync(SOURCE_ICON, path.join(ASSETS_DIR, 'adaptive-icon.png'));
+fs.copyFileSync(SOURCE_ICON, path.join(ASSETS_DIR, 'splash.png'));
+const favPng = path.join(ROOT, 'public', 'favicon.png');
+if (fs.existsSync(favPng)) fs.copyFileSync(favPng, path.join(ASSETS_DIR, 'favicon.png'));
+console.log('✓ Synced Expo assets folder (icon.png, adaptive-icon.png, splash.png, favicon.png)');
 
-console.log('All Android mipmap icons generated successfully!');
+console.log('All Android and Expo assets generated successfully!');
+

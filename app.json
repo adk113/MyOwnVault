@@ -4,10 +4,10 @@
     "slug": "myownvault",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./public/app-icon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./public/app-icon.png",
+      "image": "./assets/splash.png",
       "backgroundColor": "#030712",
       "resizeMode": "contain"
     },
@@ -18,12 +18,13 @@
     "android": {
       "package": "com.adk113.myownvault",
       "adaptiveIcon": {
-        "foregroundImage": "./public/app-icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#030712"
       }
     },
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
     }
   }
 }
