@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { scorePassword } from '../lib/password.js';
 
-export default function PasswordInput({ id, label, value, onChange, meter = false, autoFocus, placeholder, autoComplete = 'current-password', onEnter }) {
+export default function PasswordInput({ id, label, value, onChange, meter = false, autoFocus, placeholder, autoComplete = 'current-password', onEnter, maxLength }) {
   const [show, setShow] = useState(false);
   const s = scorePassword(value);
   return (
@@ -16,6 +16,7 @@ export default function PasswordInput({ id, label, value, onChange, meter = fals
           className="input has-icon has-actions"
           type={show ? 'text' : 'password'}
           value={value}
+          maxLength={maxLength}
           autoFocus={autoFocus}
           placeholder={placeholder}
           autoComplete={autoComplete}

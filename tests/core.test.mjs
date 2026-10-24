@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { KDF_ITERATIONS, decryptJSON, encryptJSON, newDataKey, passphraseDecrypt, passphraseEncrypt, rawToKey, unwrapRaw, wrapRaw } from '../src/crypto/vaultCrypto.js';
+import { KDF_ITERATIONS, decryptJSON, deriveQuestionsSecret, encryptJSON, newDataKey, passphraseDecrypt, passphraseEncrypt, rawToKey, unwrapRaw, wrapRaw } from '../src/crypto/vaultCrypto.js';
 import { generateTotp, isValidTotpSecret } from '../src/crypto/totp.js';
 import { daysUntil, fromISO, parseDateInput } from '../src/lib/dates.js';
 import { computeNetWorth, diversification, generateInsights } from '../src/lib/analytics.js';
@@ -14,8 +14,8 @@ test('KDF uses exactly 600,000 iterations', () => assert.equal(KDF_ITERATIONS, 6
 
 test('password wrap/unwrap round-trip, wrong secret rejected, vault encrypt/decrypt', async () => {
   const raw = newDataKey();
-  const slot = await wrapRaw(raw, 'correct horse battery staple');
-  assert.deepEqual(await unwrapRaw(slot, 'correct horse battery staple'), raw);
+  const slot = await wrapRaw(raw, 'Pass123!');
+  assert.deepEqual(await unwrapRaw(slot, 'Pass123!'), raw);
   assert.equal(await unwrapRaw(slot, 'wrong'), null);
   const key = await rawToKey(raw);
   const blob = await encryptJSON(key, { hello: 'world' }, 'vault:main');
@@ -23,11 +23,16 @@ test('password wrap/unwrap round-trip, wrong secret rejected, vault encrypt/decr
   await assert.rejects(decryptJSON(key, blob, 'vault:decoy')); // AAD binds ciphertext to its profile
 });
 
-test('same DEK opens via password slot and recovery slot', async () => {
+test('same DEK opens via 8-character password slot and 3 secret recovery questions slot', async () => {
   const raw = newDataKey();
-  const pw = await wrapRaw(raw, 'master-password');
-  const rec = await wrapRaw(raw, 'legal winner thank year wave sausage worth useful legal winner thank yellow');
-  assert.deepEqual(await unwrapRaw(rec, 'legal winner thank year wave sausage worth useful legal winner thank yellow'), await unwrapRaw(pw, 'master-password'));
+  const pw = await wrapRaw(raw, 'Vault88#'); // strictly <= 8 chars
+  const qaSecret = deriveQuestionsSecret([
+    { question: 'What was the name of your first elementary school?', answer: 'Lincoln Elementary' },
+    { question: 'In what city or town were you born?', answer: 'San Francisco' },
+    { question: 'What was your childhood nickname?', answer: 'Ace' },
+  ]);
+  const rec = await wrapRaw(raw, qaSecret);
+  assert.deepEqual(await unwrapRaw(rec, qaSecret), await unwrapRaw(pw, 'Vault88#'));
 });
 
 test('encrypted backup file round-trip', async () => {

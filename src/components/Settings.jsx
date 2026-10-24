@@ -8,7 +8,7 @@ import PasswordInput from './PasswordInput.jsx';
 import MergeDialog from './MergeDialog.jsx';
 import { CURRENCIES } from '../lib/format.js';
 import { downloadText } from '../lib/backup.js';
-import { MIN_PASSWORD, scorePassword } from '../lib/password.js';
+import { MAX_PASSWORD, MIN_PASSWORD, scorePassword } from '../lib/password.js';
 import { useVault } from '../state/VaultContext.jsx';
 import { useUI } from '../state/UIContext.jsx';
 
@@ -135,11 +135,11 @@ export default function Settings() {
       {!isDecoy && (
         <>
           <Section icon={<KeyRound size={18} />} title="Security" desc={`Zero-knowledge AES-GCM-256 · PBKDF2-SHA256 × 600,000 · ${flags.hasBio ? 'Biometric unlock on' : 'Master password required'}`}>
-            <Row title="Master password" desc="Re-wraps your encryption key – your data does not need to be re-encrypted.">
+            <Row title="Master password" desc="Re-wraps your encryption key – your data does not need to be re-encrypted. Strictly capped at 8 characters.">
               <button className="btn btn-soft" onClick={() => setDlg('pw')} id="change-password">Change password</button>
             </Row>
-            <Row title="Recovery phrase" desc="Your 12-word phrase (shown once at setup) resets a forgotten password from the login screen: ‘Forgot password?’. Keep it offline.">
-              <span className="pill-static">12 words · offline</span>
+            <Row title="Secret recovery questions" desc="Your 3 secret questions reset a forgotten password from the login screen: ‘Forgot password?’. Evaluated zero-knowledge via PBKDF2 (600,000 rounds).">
+              <span className="pill-static">3 Questions · offline</span>
             </Row>
             <Row title="Duress password" desc={flags.hasDuress ? 'Active. Entering it at login opens a separate decoy vault with dummy data. Sign in with it to edit the decoy.' : 'An alternate password that opens a believable decoy profile if you are ever forced to unlock the app.'}>
               {flags.hasDuress ? (
@@ -250,14 +250,13 @@ export default function Settings() {
         onClose={() => setDlg(null)}
         title="Change master password"
         confirmLabel="Change password"
-        meterOn="next"
         fields={[
           { key: 'current', label: 'Current password' },
-          { key: 'next', label: 'New password', min: MIN_PASSWORD },
+          { key: 'next', label: `New password (max ${MAX_PASSWORD} characters)` },
           { key: 'again', label: 'Repeat new password', matches: 'next' },
         ]}
         action={async (x) => {
-          if (scorePassword(x.next).score < 2) return { ok: false, error: 'Choose a stronger password.' };
+          if (!x.next || x.next.length > MAX_PASSWORD) return { ok: false, error: `Password must be between 1 and ${MAX_PASSWORD} characters.` };
           const r = await v.changePassword(x.current, x.next);
           if (r.ok) toast('Master password updated');
           return r;

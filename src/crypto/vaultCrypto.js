@@ -114,3 +114,18 @@ export async function passphraseDecrypt(file, passphrase) {
   const key = await deriveKey(passphrase, fromB64(file.kdf.salt));
   return decryptJSON(key, file, 'myownvault-backup');
 }
+
+/**
+ * Combines 3 secret recovery questions and answers into a deterministic secret string.
+ * Trims and lowercases answers, trims questions, and sorts deterministically.
+ */
+export function deriveQuestionsSecret(qaList) {
+  if (!Array.isArray(qaList) || qaList.length !== 3) {
+    throw new Error('Exactly 3 Secret Questions & Answers are required.');
+  }
+  return qaList
+    .map(({ question, answer }) => `${(question || '').trim()}:::${(answer || '').trim().toLowerCase()}`)
+    .sort()
+    .join('|||');
+}
+

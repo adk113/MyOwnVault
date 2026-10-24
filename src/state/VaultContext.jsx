@@ -3,6 +3,7 @@ import {
   KDF_ITERATIONS,
   decryptJSON,
   deriveKey,
+  deriveQuestionsSecret,
   encryptJSON,
   newDataKey,
   rawToKey,
@@ -64,7 +65,12 @@ export function VaultProvider({ children }) {
 
   const refreshFlags = useCallback(async () => {
     const [meta, bio, supported] = await Promise.all([dbGet('meta'), dbGet('bio'), biometricAvailable()]);
-    setFlags({ hasDuress: !!meta?.duress, hasBio: !!bio, bioSupported: supported });
+    setFlags({
+      hasDuress: !!meta?.duress,
+      hasBio: !!bio,
+      bioSupported: supported,
+      recoveryQuestions: meta?.recoveryQuestions || [],
+    });
     return meta;
   }, []);
 
@@ -114,18 +120,24 @@ export function VaultProvider({ children }) {
 
   // ── lifecycle ────────────────────────────────────────────────
   const setup = useCallback(
-    async (password, mnemonic) => {
+    async (password, questionsWithAnswers) => {
       const raw = newDataKey();
       const pw = await wrapRaw(raw, password);
-      const rec = await wrapRaw(raw, normalizeMnemonic(mnemonic));
+      const qaSecret = Array.isArray(questionsWithAnswers)
+        ? deriveQuestionsSecret(questionsWithAnswers)
+        : normalizeMnemonic(questionsWithAnswers);
+      const rec = await wrapRaw(raw, qaSecret);
       const key = await rawToKey(raw);
       wipe(raw);
       const data = emptyVault();
       await persistVault('main', key, data);
       await dbSet('meta', {
-        v: 1,
+        v: 2,
         kdf: { name: 'PBKDF2-SHA256', iterations: KDF_ITERATIONS },
         main: { pw, rec },
+        recoveryQuestions: Array.isArray(questionsWithAnswers)
+          ? questionsWithAnswers.map((x) => (x.question || '').trim())
+          : [],
         createdAt: Date.now(),
       });
       keyRef.current = key;
@@ -174,10 +186,18 @@ export function VaultProvider({ children }) {
   }, [open]);
 
   const recover = useCallback(
-    async (mnemonic, newPassword) => {
+    async (secretInput, newPassword) => {
       const meta = await dbGet('meta');
-      const raw = await unwrapRaw(meta.main.rec, normalizeMnemonic(mnemonic));
-      if (!raw) return { ok: false, error: 'Those words do not match this vault.' };
+      let raw = null;
+      if (Array.isArray(secretInput)) {
+        const questions = meta?.recoveryQuestions || [];
+        const qaList = questions.map((q, i) => ({ question: q, answer: secretInput[i] || '' }));
+        const qaSecret = deriveQuestionsSecret(qaList);
+        raw = await unwrapRaw(meta.main.rec, qaSecret);
+      } else {
+        raw = await unwrapRaw(meta.main.rec, normalizeMnemonic(secretInput));
+      }
+      if (!raw) return { ok: false, error: 'Secret recovery answers do not match.' };
       meta.main.pw = await wrapRaw(raw, newPassword);
       await dbSet('meta', meta);
       await open('main', raw);
