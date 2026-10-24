@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download MyOwnVault · Offline Wealth Ledger & Vault</title>
+  <link rel="icon" type="image/png" href="./favicon.png" />
+  <link rel="apple-touch-icon" href="./app-icon.png" />
+  <meta name="theme-color" content="#030712" />
+  <meta name="description" content="Download MyOwnVault for Android and iOS. Zero-knowledge, 100% offline Personal Wealth & Credential Vault." />
+  <style>
+    :root {
+      --bg: #030712;
+      --card-bg: rgba(17, 24, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-purple: #8b5cf6;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #111827 0%, #030712 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+    }
+    .container {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .app-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.3);
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .badges {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+    }
+    .badge-secure { border-color: rgba(16, 185, 129, 0.4); color: #34d399; }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .card.highlight {
+      border-color: rgba(6, 182, 212, 0.5);
+      box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
+    }
+    .card-glow {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+    }
+    .glow-android { background: linear-gradient(90deg, #10b981, #06b6d4); }
+    .glow-ios { background: linear-gradient(90deg, #38bdf8, #818cf8); }
+
+    .platform-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .platform-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .qr-container {
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      margin: 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-container img {
+      width: 170px;
+      height: 170px;
+      display: block;
+      border-radius: 6px;
+    }
+    .qr-label {
+      color: #0f172a;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 8px;
+      letter-spacing: 0.02em;
+    }
+    .instructions {
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 14px 0;
+      width: 100%;
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin-bottom: 6px;
+    }
+    .instructions b {
+      color: var(--text);
+    }
+    .btn {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      margin-top: auto;
+    }
+    .btn-android {
+      background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+      color: white;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+    }
+    .btn-android:hover {
+      background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    .btn-ios {
+      background: linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+      color: white;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+    .btn-ios:hover {
+      background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+    }
+    .device-banner {
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .footer a {
+      color: var(--accent-cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="./app-icon.png" alt="MyOwnVault Logo" class="app-logo" />
+      <h1>Get MyOwnVault</h1>
+      <p class="subtitle">Zero-knowledge, 100% offline Personal Wealth Ledger and Credential Vault. No servers, no tracking, complete privacy.</p>
+      <div class="badges">
+        <span class="badge badge-secure">🛡️ AES-GCM-256</span>
+        <span class="badge badge-secure">🔒 PBKDF2 × 600,000</span>
+        <span class="badge">✈️ 100% Offline</span>
+        <span class="badge">🌐 Zero Remote APIs</span>
+      </div>
+    </div>
+
+    <div id="device-banner" class="device-banner"></div>
+
+    <div class="grid">
+      <!-- Android Column -->
+      <div class="card" id="card-android">
+        <div class="card-glow glow-android"></div>
+        <div class="platform-header">
+          <span style="font-size: 1.6rem;">🤖</span>
+          <div style="text-align: left;">
+            <div class="platform-title">Android</div>
+            <span style="font-size: 0.8rem; color: #34d399; font-weight: 600;">Standalone Native APK</span>
+          </div>
+        </div>
+
+        <div class="qr-container">
+          <img src="./qr-android-apk.svg" alt="Scan to download Android APK" />
+          <span class="qr-label">Scan to Download .APK</span>
+        </div>
+
+        <ol class="instructions">
+          <li>Point your phone camera at the QR code</li>
+          <li>Download the standalone <b>MyOwnVault.apk</b></li>
+          <li>Tap the downloaded notification to install</li>
+          <li>Runs 100% offline on any Android phone (8.0+)</li>
+        </ol>
+
+        <a href="https://github.com/adk113/MyOwnVault/releases/download/v1.0.0/MyOwnVault.apk" class="btn btn-android" id="btn-android-download">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Direct Download Android APK (6.5 MB)
+        </a>
+      </div>
+
+      <!-- iOS Column -->
+      <div class="card" id="card-ios">
+        <div class="card-glow glow-ios"></div>
+        <div class="platform-header">
+          <span style="font-size: 1.6rem;">🍏</span>
+          <div style="text-align: left;">
+            <div class="platform-title">Apple iOS</div>
+            <span style="font-size: 0.8rem; color: #38bdf8; font-weight: 600;">Safari Full-Screen PWA</span>
+          </div>
+        </div>
+
+        <div class="qr-container">
+          <img src="./qr-ios.svg" alt="Scan to open on iPhone/iPad" />
+          <span class="qr-label">Scan with iPhone Camera</span>
+        </div>
+
+        <ol class="instructions">
+          <li>Open the camera on your iPhone or iPad</li>
+          <li>Scan the QR code to open in <b>Safari</b></li>
+          <li>Tap the <b>Share</b> button (square with arrow ↑)</li>
+          <li>Select <b>"Add to Home Screen"</b> for the native offline app</li>
+        </ol>
+
+        <a href="https://adk113.github.io/MyOwnVault/" class="btn btn-ios" id="btn-ios-launch">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open in Safari (Add to Home Screen)
+        </a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>MyOwnVault is open-source and local-first. <a href="https://github.com/adk113/MyOwnVault" target="_blank" rel="noreferrer">View on GitHub</a></p>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      var ua = navigator.userAgent || navigator.vendor || window.opera;
+      var banner = document.getElementById('device-banner');
+      var cardAndroid = document.getElementById('card-android');
+      var cardIos = document.getElementById('card-ios');
+
+      if (/android/i.test(ua)) {
+        cardAndroid.classList.add('highlight');
+        banner.style.display = 'inline-flex';
+        banner.innerHTML = '🤖 <b>Detected Android Device</b>: Tap below to download the latest APK directly.';
+      } else if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+        cardIos.classList.add('highlight');
+        banner.style.display = 'inline-flex';
+        banner.innerHTML = '🍏 <b>Detected Apple iOS Device</b>: Tap below to open in Safari and add to your Home Screen.';
+      }
+    })();
+  </script>
+</body>
+</html>
