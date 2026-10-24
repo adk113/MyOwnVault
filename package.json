@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "icons": "node scripts/generate-android-icons.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "qr": "node scripts/show-qr.mjs",
